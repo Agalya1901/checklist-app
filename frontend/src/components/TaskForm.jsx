@@ -13,7 +13,7 @@ const TaskForm = ({ onAdd }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-4 sm:mb-6">
+    <form onSubmit={handleSubmit} className="mb-6">
       <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
         <input
           type="text"

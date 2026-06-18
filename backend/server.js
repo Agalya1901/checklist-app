@@ -3,19 +3,21 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
-const taskRoutes = require('./routes/tasks');
+const authRoutes = require('./routes/auth');
+const folderRoutes = require('./routes/folders');
 
 const app = express();
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173'],
+  origin: ['http://localhost:5173', 'http://localhost:3000', '*'],
   credentials: true
 }));
 app.use(express.json());
 
 // Routes
-app.use('/api/tasks', taskRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/folders', folderRoutes);
 
 // Root route
 app.get('/', (req, res) => {
@@ -23,10 +25,15 @@ app.get('/', (req, res) => {
 });
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI)
+const MONGODB_URI = process.env.MONGODB_URI;
+if (!MONGODB_URI) {
+  console.error('❌ MONGODB_URI is not defined in environment variables');
+  process.exit(1);
+}
+
+mongoose.connect(MONGODB_URI)
   .then(() => {
     console.log('✅ MongoDB Atlas Connected Successfully!');
-    console.log('📊 Database:', mongoose.connection.db.databaseName);
   })
   .catch(err => {
     console.error('❌ MongoDB Connection Error:', err.message);
@@ -36,5 +43,4 @@ mongoose.connect(process.env.MONGODB_URI)
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📍 http://localhost:${PORT}`);
 });

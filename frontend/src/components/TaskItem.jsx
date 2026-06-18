@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { FiCheck, FiEdit2, FiTrash2, FiX, FiSave } from 'react-icons/fi';
+import { FiCheck, FiEdit2, FiTrash2, FiX, FiSave, FiUser } from 'react-icons/fi';
 
-const TaskItem = ({ task, onToggle, onEdit, onDelete, index }) => {
+const TaskItem = ({ task, onToggle, onEdit, onDelete, index, currentUser }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(task.text);
+  const isCurrentUser = task.createdBy === currentUser;
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -38,10 +39,9 @@ const TaskItem = ({ task, onToggle, onEdit, onDelete, index }) => {
       }`}
     >
       <div className="flex items-start sm:items-center gap-2 sm:gap-3">
-        {/* Checkbox - Larger touch target on mobile */}
         <button
           onClick={() => onToggle(task._id, task.completed)}
-          className={`w-6 h-6 sm:w-6 sm:h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-200 flex-shrink-0 mt-0.5 sm:mt-0 ${
+          className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-200 flex-shrink-0 mt-0.5 sm:mt-0 ${
             task.completed
               ? 'bg-blue-600 border-blue-600 hover:bg-blue-700'
               : 'border-gray-300 hover:border-blue-400 hover:bg-blue-50'
@@ -51,7 +51,6 @@ const TaskItem = ({ task, onToggle, onEdit, onDelete, index }) => {
           {task.completed && <FiCheck className="text-white text-sm" />}
         </button>
 
-        {/* Task Text */}
         {isEditing ? (
           <div className="flex-1 flex flex-wrap sm:flex-nowrap items-center gap-2">
             <input
@@ -81,15 +80,25 @@ const TaskItem = ({ task, onToggle, onEdit, onDelete, index }) => {
           </div>
         ) : (
           <>
-            <span 
-              className={`flex-1 text-gray-800 font-medium text-sm sm:text-base leading-relaxed break-words ${
-                task.completed ? 'line-through text-gray-400' : ''
-              }`}
-            >
-              {task.text}
-            </span>
+            <div className="flex-1 min-w-0">
+              <span 
+                className={`text-gray-800 font-medium text-sm sm:text-base leading-relaxed break-words ${
+                  task.completed ? 'line-through text-gray-400' : ''
+                }`}
+              >
+                {task.text}
+              </span>
+              <div className="flex items-center gap-2 mt-1">
+                <FiUser className="text-xs text-gray-400" />
+                <span className="text-xs text-gray-400">
+                  {task.createdBy || 'Anonymous'}
+                </span>
+                {isCurrentUser && (
+                  <span className="text-xs bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded">You</span>
+                )}
+              </div>
+            </div>
 
-            {/* Action Buttons - Always visible on mobile, hover on desktop */}
             <div className="flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
               <button
                 onClick={handleEdit}

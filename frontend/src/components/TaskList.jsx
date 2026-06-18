@@ -1,10 +1,11 @@
 import React from 'react';
 import TaskItem from './TaskItem';
-import { FiClipboard } from 'react-icons/fi';
+import { FiClipboard, FiUsers } from 'react-icons/fi';
 
-const TaskList = ({ tasks, onToggle, onEdit, onDelete }) => {
+const TaskList = ({ tasks, onToggle, onEdit, onDelete, currentUser }) => {
   const completedTasks = tasks.filter(task => task.completed).length;
   const totalTasks = tasks.length;
+  const taskCreators = [...new Set(tasks.map(t => t.createdBy || 'Anonymous'))];
 
   if (tasks.length === 0) {
     return (
@@ -33,8 +34,9 @@ const TaskList = ({ tasks, onToggle, onEdit, onDelete }) => {
             <span className="text-xs sm:text-sm text-gray-500 ml-1">pending</span>
           </div>
         </div>
-        <div className="text-xs sm:text-sm text-gray-400">
-          {totalTasks} total
+        <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-400">
+          <FiUsers />
+          <span>{taskCreators.length} contributor{taskCreators.length > 1 ? 's' : ''}</span>
         </div>
       </div>
 
@@ -48,6 +50,7 @@ const TaskList = ({ tasks, onToggle, onEdit, onDelete }) => {
             onEdit={onEdit}
             onDelete={onDelete}
             index={index}
+            currentUser={currentUser}
           />
         ))}
       </div>
