@@ -34,16 +34,21 @@ router.post('/login', async (req, res) => {
       await user.save();
     }
 
-    res.json({ 
+    // ✅ Send response with proper headers
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json({ 
       user: {
         id: user._id,
         username: user.username,
-        isOnline: user.isOnline
+        isOnline: user.isOnline,
+        createdAt: user.createdAt
       }
     });
   } catch (error) {
     console.error('❌ Login error:', error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ 
+      message: error.message || 'Login failed' 
+    });
   }
 });
 
