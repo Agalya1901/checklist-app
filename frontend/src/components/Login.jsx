@@ -3,9 +3,6 @@ import { FiUser, FiLogIn, FiUsers } from 'react-icons/fi';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 
-// ✅ Use your deployed backend URL
-const API_URL = 'https://checklist-backend-3qob.onrender.com/api/auth';
-
 const Login = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
@@ -23,23 +20,52 @@ const Login = ({ onLogin }) => {
     setError('');
 
     try {
-      console.log('📝 Sending login request to:', API_URL);
+      // ✅ Use your deployed backend URL directly
+      const API_URL = 'https://checklist-backend-3qob.onrender.com/api/auth';
+      
+      console.log('📝 Sending login request to:', `${API_URL}/login`);
       console.log('📝 Username:', username.trim());
       
-      const response = await axios.post(`${API_URL}/login`, { 
-        username: username.trim() 
-      });
+      const response = await axios.post(
+        `${API_URL}/login`, 
+        { username: username.trim() },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          timeout: 10000 // 10 second timeout
+        }
+      );
       
       console.log('✅ Login response:', response.data);
       
-      // Call the onLogin callback from App.jsx
-      onLogin(response.data.user);
-      toast.success(`Welcome, ${username.trim()}! 👋`);
+      if (response.data && response.data.user) {
+        onLogin(response.data.user);
+        toast.success(`Welcome, ${username.trim()}! 👋`);
+      } else {
+        throw new Error('Invalid response from server');
+      }
     } catch (error) {
       console.error('❌ Login error:', error);
       console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
       
-      const errorMessage = error.response?.data?.message || 'Login failed. Please try again.';
+      let errorMessage = 'Login failed. Please try again.';
+      
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        if (error.response.status === 404) {
+          errorMessage = 'Server not found. Please check your connection.';
+        } else if (error.response.status === 500) {
+          errorMessage = 'Server error. Please try again later.';
+        } else if (error.response.data && error.response.data.message) {
+          errorMessage = error.response.data.message;
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        errorMessage = 'No response from server. Please check your connection.';
+      }
+      
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
