@@ -12,18 +12,30 @@ const Folder = ({ folder, onBack, onUpdate, currentUser }) => {
   const [loading, setLoading] = useState(false);
 
   const addTask = async (text) => {
+    if (!text || !text.trim()) {
+      toast.error('Please enter a task');
+      return;
+    }
+
     try {
       setLoading(true);
+      console.log('📝 Adding task to folder:', folder._id);
+      console.log('📝 Task text:', text);
+      console.log('📝 Created by:', currentUser);
+      
       const response = await axios.post(`${API_URL}/${folder._id}/tasks`, { 
-        text,
-        createdBy: currentUser
+        text: text.trim(),
+        createdBy: currentUser || 'Anonymous'
       });
+      
+      console.log('✅ Task added successfully:', response.data);
       setTasks(response.data.tasks);
       onUpdate(response.data);
       toast.success('Task added! ✅');
     } catch (error) {
-      console.error('Error adding task:', error);
-      toast.error('Failed to add task');
+      console.error('❌ Error adding task:', error);
+      console.error('Error response:', error.response?.data);
+      toast.error(error.response?.data?.message || 'Failed to add task');
     } finally {
       setLoading(false);
     }
@@ -31,39 +43,52 @@ const Folder = ({ folder, onBack, onUpdate, currentUser }) => {
 
   const toggleTask = async (taskId, completed) => {
     try {
+      console.log('🔄 Toggling task:', { taskId, completed });
+      
       const response = await axios.put(`${API_URL}/${folder._id}/tasks/${taskId}`, {
         completed: !completed
       });
+      
+      console.log('✅ Toggle response:', response.data);
       setTasks(response.data.tasks);
       onUpdate(response.data);
     } catch (error) {
-      console.error('Error toggling task:', error);
+      console.error('❌ Error toggling task:', error);
       toast.error('Failed to update task');
     }
   };
 
   const editTask = async (taskId, newText) => {
     try {
+      console.log('📝 Editing task:', { taskId, newText });
+      
       const response = await axios.put(`${API_URL}/${folder._id}/tasks/${taskId}`, {
         text: newText
       });
+      
+      console.log('✅ Edit response:', response.data);
       setTasks(response.data.tasks);
       onUpdate(response.data);
       toast.success('Task updated! ✏️');
     } catch (error) {
-      console.error('Error editing task:', error);
+      console.error('❌ Error editing task:', error);
       toast.error('Failed to update task');
     }
   };
 
   const deleteTask = async (taskId) => {
+    if (!window.confirm('Are you sure you want to delete this task?')) return;
+
     try {
+      console.log('🗑️ Deleting task:', taskId);
+      
       const response = await axios.delete(`${API_URL}/${folder._id}/tasks/${taskId}`);
+      console.log('✅ Delete response:', response.data);
       setTasks(response.data.tasks);
       onUpdate(response.data);
       toast.success('Task deleted! 🗑️');
     } catch (error) {
-      console.error('Error deleting task:', error);
+      console.error('❌ Error deleting task:', error);
       toast.error('Failed to delete task');
     }
   };
@@ -114,7 +139,7 @@ const Folder = ({ folder, onBack, onUpdate, currentUser }) => {
         </div>
 
         {/* Task Form */}
-        <TaskForm onAdd={addTask} />
+        <TaskForm onAdd={addTask} loading={loading} />
 
         {/* Task List */}
         <TaskList 

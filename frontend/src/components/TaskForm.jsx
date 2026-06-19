@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { FiPlus } from 'react-icons/fi';
 
-const TaskForm = ({ onAdd }) => {
+const TaskForm = ({ onAdd, loading = false }) => {
   const [text, setText] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (text.trim()) {
+    if (text.trim() && !loading) {
       onAdd(text.trim());
       setText('');
     }
@@ -21,14 +21,16 @@ const TaskForm = ({ onAdd }) => {
           onChange={(e) => setText(e.target.value)}
           placeholder="Add a new task..."
           className="flex-1 px-4 sm:px-5 py-3 sm:py-4 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 text-gray-800 placeholder-gray-400 font-medium text-sm sm:text-base"
+          disabled={loading}
           autoFocus
         />
         <button
           type="submit"
-          className="px-6 sm:px-8 py-3 sm:py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 flex items-center justify-center gap-2 font-semibold text-sm sm:text-base shadow-lg shadow-blue-200 hover:shadow-blue-300 transform hover:scale-[1.02] active:scale-[0.98]"
+          disabled={loading || !text.trim()}
+          className="px-6 sm:px-8 py-3 sm:py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 flex items-center justify-center gap-2 font-semibold text-sm sm:text-base shadow-lg shadow-blue-200 hover:shadow-blue-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <FiPlus className="text-lg sm:text-xl" />
-          <span>Add</span>
+          <span>{loading ? 'Adding...' : 'Add'}</span>
         </button>
       </div>
     </form>

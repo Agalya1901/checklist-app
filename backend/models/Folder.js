@@ -10,7 +10,8 @@ const folderSchema = new mongoose.Schema({
   },
   createdBy: {
     type: String,
-    required: true
+    required: false, // Changed from true to false
+    default: 'Anonymous'
   },
   tasks: [{
     text: {
@@ -39,6 +40,8 @@ const folderSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
+}, {
+  timestamps: true
 });
 
 module.exports = mongoose.model('Folder', folderSchema);

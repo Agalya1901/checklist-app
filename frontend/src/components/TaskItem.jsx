@@ -39,6 +39,7 @@ const TaskItem = ({ task, onToggle, onEdit, onDelete, index, currentUser }) => {
       }`}
     >
       <div className="flex items-start sm:items-center gap-2 sm:gap-3">
+        {/* Checkbox */}
         <button
           onClick={() => onToggle(task._id, task.completed)}
           className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-200 flex-shrink-0 mt-0.5 sm:mt-0 ${
