@@ -3,7 +3,7 @@ import { FiUser, FiUsers, FiLogOut, FiCheckCircle, FiClock, FiCalendar, FiUserCh
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
-const AUTH_URL = 'http://localhost:5001/api/auth';
+const AUTH_URL = 'https://checklist-backend-3qob.onrender.com/api/auth';
 
 const ProfileDropdown = ({ user, users, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);

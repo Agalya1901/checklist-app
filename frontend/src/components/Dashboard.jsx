@@ -4,8 +4,8 @@ import axios from 'axios';
 import Folder from './Folder';
 import { toast } from 'react-hot-toast';
 
-const API_URL = 'http://localhost:5001/api/folders';
-const AUTH_URL = 'http://localhost:5001/api/auth';
+const API_URL = 'https://checklist-backend-3qob.onrender.com/api/folders';
+const AUTH_URL = 'https://checklist-backend-3qob.onrender.com/api/auth';
 
 const Dashboard = ({ user, onLogout }) => {
   const [folders, setFolders] = useState([]);

@@ -5,7 +5,7 @@ import TaskList from './TaskList';
 import TaskForm from './TaskForm';
 import { toast } from 'react-hot-toast';
 
-const API_URL = 'http://localhost:5001/api/folders';
+const API_URL = 'https://checklist-backend-3qob.onrender.com/api/folders';
 
 const Folder = ({ folder, onBack, onUpdate, currentUser }) => {
   const [tasks, setTasks] = useState(folder.tasks || []);

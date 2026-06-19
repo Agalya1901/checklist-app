@@ -3,7 +3,7 @@ import { FiUser, FiLogIn, FiUsers } from 'react-icons/fi';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 
-const API_URL = 'http://localhost:5001/api/auth';
+const API_URL = 'https://checklist-backend-3qob.onrender.com/api/auth';
 
 const Login = ({ onLogin }) => {
   const [username, setUsername] = useState('');
