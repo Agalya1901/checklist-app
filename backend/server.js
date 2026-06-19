@@ -8,11 +8,20 @@ const folderRoutes = require('./routes/folders');
 
 const app = express();
 
-// Middleware
+// ✅ FIX: Update CORS configuration
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000', '*'],
-  credentials: true
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://checklist-app.vercel.app',
+    'https://checklist-app-git-main.vercel.app',
+    '*'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 app.use(express.json());
 
 // Routes

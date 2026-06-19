@@ -5,9 +5,12 @@ const User = require('../models/User');
 // Login or Create User
 router.post('/login', async (req, res) => {
   try {
+    console.log('📝 Login request received:', req.body);
+    
     const { username } = req.body;
     
     if (!username || username.trim().length < 3) {
+      console.log('❌ Invalid username:', username);
       return res.status(400).json({ 
         message: 'Username must be at least 3 characters' 
       });
@@ -17,6 +20,7 @@ router.post('/login', async (req, res) => {
     let user = await User.findOne({ username: username.trim() });
     
     if (!user) {
+      console.log('👤 Creating new user:', username.trim());
       user = new User({ 
         username: username.trim(),
         isOnline: true,
@@ -24,7 +28,7 @@ router.post('/login', async (req, res) => {
       });
       await user.save();
     } else {
-      // Update online status
+      console.log('👤 User found:', username.trim());
       user.isOnline = true;
       user.lastSeen = Date.now();
       await user.save();
@@ -38,6 +42,7 @@ router.post('/login', async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('❌ Login error:', error);
     res.status(500).json({ message: error.message });
   }
 });
