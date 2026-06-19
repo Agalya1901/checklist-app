@@ -4,3 +4,5 @@ frontend/node_modules/
 backend/node_modules/
 .env
 "@ | Out-File -Encoding utf8 .gitignore
+dist/
+node_modules/
