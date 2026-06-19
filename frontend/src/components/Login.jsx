@@ -3,6 +3,7 @@ import { FiUser, FiLogIn, FiUsers } from 'react-icons/fi';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 
+// ✅ Use your deployed backend URL
 const API_URL = 'https://checklist-backend-3qob.onrender.com/api/auth';
 
 const Login = ({ onLogin }) => {
@@ -22,14 +23,25 @@ const Login = ({ onLogin }) => {
     setError('');
 
     try {
+      console.log('📝 Sending login request to:', API_URL);
+      console.log('📝 Username:', username.trim());
+      
       const response = await axios.post(`${API_URL}/login`, { 
         username: username.trim() 
       });
-      toast.success(`Welcome, ${username.trim()}! 👋`);
+      
+      console.log('✅ Login response:', response.data);
+      
+      // Call the onLogin callback from App.jsx
       onLogin(response.data.user);
+      toast.success(`Welcome, ${username.trim()}! 👋`);
     } catch (error) {
-      setError(error.response?.data?.message || 'Login failed. Please try again.');
-      toast.error('Login failed');
+      console.error('❌ Login error:', error);
+      console.error('Error response:', error.response?.data);
+      
+      const errorMessage = error.response?.data?.message || 'Login failed. Please try again.';
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
